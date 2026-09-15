@@ -635,7 +635,8 @@ void uart_send_report(uint8_t report_type, uint8_t *report_buf, uint8_t report_s
     memcpy(&Usart_Mgr.TXDBuf[4], report_buf, report_size);
     Usart_Mgr.TXDBuf[4 + report_size] = get_checksum(&Usart_Mgr.TXDBuf[4], report_size);
 
-    uart_repeat_flag = 1;
+    // 鼠标报告是相对量，转发 3 遍会变成 3 倍滚动量/位移；键盘等绝对状态报告才需要重发
+    uart_repeat_flag = (report_type != CMD_RPT_MS);
 
     UART_Send_Bytes(&Usart_Mgr.TXDBuf[0], report_size + 5);
 
