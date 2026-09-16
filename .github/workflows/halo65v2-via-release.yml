@@ -27,7 +27,7 @@ jobs:
           enable-cache: false
 
       - name: Install Python dependencies
-        run: uv pip install --python "$(command -v python3)" -r requirements.txt
+        run: uv pip install -r requirements.txt
 
       - name: Deploy submodules
         run: qmk git-submodule -f
