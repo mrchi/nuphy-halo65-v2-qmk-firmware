@@ -1,0 +1,43 @@
+name: Halo65 V2 VIA Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli
+
+    steps:
+      - name: Disable safe.directory check
+        run: git config --global --add safe.directory '*'
+
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Deploy submodules
+        run: qmk git-submodule -f
+
+      - name: Compile Halo65 V2 VIA firmware
+        run: qmk compile -kb nuphy/halo65_v2/ansi -km via
+
+      - name: Check BIN firmware
+        run: test -f nuphy_halo65_v2_ansi_via.bin
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: nuphy_halo65_v2_ansi_via.bin
+          fail_on_unmatched_files: true
+          overwrite_files: true
