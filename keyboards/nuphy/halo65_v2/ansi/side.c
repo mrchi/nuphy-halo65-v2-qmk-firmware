@@ -1066,7 +1066,9 @@ void m_apply_factory_defaults(void)
 
     f_dev_sleep_enable = true;
 
+    rgb_matrix_enable(); // must run first: the calls below are no-ops while the matrix is disabled
     rgb_matrix_mode(RGB_MATRIX_DEFAULT_MODE); // the effect lives in its own EEPROM region
+    rgb_matrix_set_speed(255 - RGB_MATRIX_SPD_STEP * 2);
     rgb_matrix_sethsv(21, 255, 64);           // hue 21 ~= 30 deg orange, sat 255, 25% brightness
 
     user_config.default_brightness_flag = FACTORY_DEFAULTS_FLAG;
@@ -1087,9 +1089,6 @@ void device_reset_init(void)
     side_play_timer = timer_read32();
 
     f_bat_hold = false;
-
-    rgb_matrix_enable();
-    rgb_matrix_set_speed(255 - RGB_MATRIX_SPD_STEP * 2);
 
     m_apply_factory_defaults();
 }

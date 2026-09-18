@@ -51,7 +51,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // layer 6
 [6] = LAYOUT(
 	_______, 	_______,   	_______,   	_______,  	_______,   	_______,   	_______,   	_______,   	_______,   	_______,  	_______,   	_______,	_______, 	_______,	            _______,
-	_______, 	LNK_BLE1,  LNK_BLE2,  LNK_BLE3,  LNK_RF,    _______,    _______,   	RGB_SPD,   	RGB_SPI,   	RGB_VAI,  	_______,   	DEV_RESET, SLEEP_MODE,  BAT_SHOW,	           _______,
+	_______, 	LNK_BLE1,   	LNK_BLE2,   	LNK_BLE3,   	LNK_RF,   	_______,   	_______,   	RGB_SPD,   	RGB_SPI,   	RGB_VAI,  	_______,   	DEV_RESET,	SLEEP_MODE, 	BAT_SHOW,	            _______,
 	_______,	_______,   	_______,   	_______,  	_______,   	_______,   	_______,	RGB_MOD,   	RGB_HUI,   	RGB_VAD,  	_______,	_______, 	_______,                            _______,
 	_______,				_______,   	_______,   	_______,  	_______,   	_______,   	_______,	_______, 	SIDE_SPD,	SIDE_SPI,	SIDE_MOD_B,	_______,	            SIDE_VAI,   _______,
 	_______,	_______,	_______,										_______, 							_______,	_______,   	        	            SIDE_MOD_A, SIDE_VAD,	SIDE_HUI),
