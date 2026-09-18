@@ -115,7 +115,7 @@ const uint8_t side_led_index_tab[50] =
 uint8_t side_line         = 50;
 bool    f_charging        = 1;
 uint8_t side_mode_a       = 0;
-uint8_t side_mode_b       = 3;
+uint8_t side_mode_b       = SIDE_MODE_1;
 uint8_t side_light        = 2;
 uint8_t side_speed        = 2;
 uint8_t side_rgb          = 1;
@@ -1048,14 +1048,39 @@ void device_reset_show(void)
     }
 }
 
+/**
+ * @brief  Write the factory default lighting state.
+ *
+ * Single source of truth for the factory defaults. Called on first power-up
+ * (EEPROM flag mismatch) and from device reset, so "restore factory" always
+ * matches first power-up.
+ */
+void m_apply_factory_defaults(void)
+{
+    side_mode_a = 0;
+    side_mode_b = SIDE_MODE_1; // mode B tier 1: the whole ring stays dark
+    side_light  = 2;
+    side_speed  = 2;
+    side_rgb    = 1;
+    side_colour = 0;
+
+    f_dev_sleep_enable = true;
+
+    rgb_matrix_mode(RGB_MATRIX_DEFAULT_MODE); // the effect lives in its own EEPROM region
+    rgb_matrix_sethsv(21, 255, 64);           // hue 21 ~= 30 deg orange, sat 255, 25% brightness
+
+    user_config.default_brightness_flag = FACTORY_DEFAULTS_FLAG;
+    user_config.ee_side_mode_a          = side_mode_a;
+    user_config.ee_side_mode_b          = side_mode_b;
+    user_config.ee_side_light           = side_light;
+    user_config.ee_side_speed           = side_speed;
+    user_config.ee_side_rgb             = side_rgb;
+    user_config.ee_side_colour          = side_colour;
+    eeconfig_update_user_datablock(&user_config);
+}
+
 void device_reset_init(void)
 {
-    side_mode_a       = 0;
-    side_mode_b       = 3;
-    side_light      = 2;
-    side_speed      = 2;
-    side_rgb        = 1;
-    side_colour     = 0;
     side_play_point = 0;
 
     side_play_cnt   = 0;
@@ -1063,20 +1088,10 @@ void device_reset_init(void)
 
     f_bat_hold = false;
 
-    rgb_matrix_enable();                                                                  
-    rgb_matrix_mode(RGB_MATRIX_DEFAULT_MODE);                                             
-    rgb_matrix_set_speed(255 - RGB_MATRIX_SPD_STEP * 2);                                   
-    rgb_matrix_sethsv(RGB_DEFAULT_COLOUR, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS - RGB_MATRIX_VAL_STEP * 2); 
+    rgb_matrix_enable();
+    rgb_matrix_set_speed(255 - RGB_MATRIX_SPD_STEP * 2);
 
-    user_config.default_brightness_flag = 0xA5;
-    user_config.ee_side_mode_a          = side_mode_a;
-    user_config.ee_side_mode_b          = side_mode_b;
-    user_config.ee_side_light           = side_light;
-    user_config.ee_side_speed           = side_speed;
-    user_config.ee_side_rgb             = side_rgb;
-    user_config.ee_side_colour          = side_colour;
-    f_dev_sleep_enable                  = true;
-    eeconfig_update_user_datablock(&user_config);
+    m_apply_factory_defaults();
 }
 
 /**

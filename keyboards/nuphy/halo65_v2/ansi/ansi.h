@@ -190,6 +190,10 @@ typedef struct
     uint8_t bit7: 1;
 }m_8bit;
 
+/* Bump this value whenever the factory defaults change: a mismatch triggers a
+   one-time rewrite of the factory defaults (see ADR 0001). */
+#define FACTORY_DEFAULTS_FLAG 0xA6
+
 typedef struct
 {
     uint8_t default_brightness_flag;
