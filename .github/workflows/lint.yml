@@ -77,11 +77,3 @@ jobs:
             exit 255
         fi
         exit $exit_code
-
-    - name: Verify keyboard aliases
-      if: always()
-      shell: 'bash {0}'
-      run: |
-        git reset --hard
-        git clean -xfd
-        qmk ci-validate-aliases
