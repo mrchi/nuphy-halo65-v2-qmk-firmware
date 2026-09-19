@@ -87,6 +87,7 @@ uint8_t uart_send_cmd(uint8_t cmd, uint8_t ack_cnt, uint8_t delayms);
 void uart_send_report(uint8_t report_type, uint8_t *report_buf, uint8_t report_size);
 void device_reset_show(void);
 void device_reset_init(void);
+void m_apply_factory_defaults(void);
 void rgb_test_show(void);
 void m_deinit_usb_072(void);
 
@@ -717,17 +718,8 @@ void timer_pro(void)
 void m_londing_eeprom_data(void)
 {
     eeconfig_read_user_datablock(&user_config);
-    if (user_config.default_brightness_flag != 0xA5) {
-        rgb_matrix_sethsv(RGB_DEFAULT_COLOUR, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS - RGB_MATRIX_VAL_STEP * 2);  
-        user_config.default_brightness_flag = 0xA5;
-        user_config.ee_side_mode_a           = side_mode_a;
-        user_config.ee_side_mode_b           = side_mode_b;
-        user_config.ee_side_light           = side_light;
-        user_config.ee_side_speed           = side_speed;
-        user_config.ee_side_rgb             = side_rgb;
-        user_config.ee_side_colour          = side_colour;
-        f_dev_sleep_enable                  = true;
-        eeconfig_update_user_datablock(&user_config);  
+    if (user_config.default_brightness_flag != FACTORY_DEFAULTS_FLAG) {
+        m_apply_factory_defaults();
     } else {
         side_mode_a   = user_config.ee_side_mode_a;
         side_mode_b   = user_config.ee_side_mode_b;
